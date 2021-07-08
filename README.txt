@@ -36,9 +36,8 @@ A1: Tell us in comments about that...
 Q2: What this game made with?
 A2: This game made with DragonRuby Game Toolkit in Ruby programming language, It uses the fast and minimal Ruby implementation mruby and well-known library SDL2, You can get it here: https://dragonruby.org/toolkit/game
 
-Q2: Can i have source code?
-A2: Yes it's on GitHub and licensed under Public Domain, From here: https://github.com/Rabios/6wrni-students-jam-1, Also game page lies here: https://rabios.itch.io/08-rooms
-
+Q3: Can i have source code?
+A3: Yes it's on GitHub and licensed under Public Domain, From here: https://github.com/Rabios/6wrni-students-jam-1, Also game page lies here: https://rabios.itch.io/08-rooms.
 
 ==========================================
            08-ROOMS - 3RD PARTY
