@@ -12,7 +12,7 @@ def play_back_sound args
 end
 
 def play_success_sound args
-  args.audio[:wave] ||= {
+  args.audio[:success] ||= {
     input: "audio/sfx_zap.ogg",
     x: 0.0,
     y: 0.0,
@@ -27,6 +27,19 @@ end
 def play_select_sound args
   args.audio[:select] ||= {
     input: "audio/399934__old-waveplay__perc-short-click-snap-perc.wav",
+    x: 0.0,
+    y: 0.0,
+    z: 0.0,
+    gain: 1.0,
+    pitch: 1.0,
+    paused: false,
+    looping: false,
+  }
+end
+
+def play_click_sound args
+  args.audio[:click] ||= {
+    input: "audio/39562__the-bizniss__mouse-click.wav",
     x: 0.0,
     y: 0.0,
     z: 0.0,
@@ -134,6 +147,7 @@ end
 
 def mouse_click_input args
   args.state.clicks += 1
+  play_click_sound args
   
   if (args.state.clicks == 1)
     args.state.first_rec = {
@@ -560,6 +574,7 @@ def puzzle args
       
       if args.inputs.mouse.click
         if AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, 196 + (i * 96), 396.from_top, 96, 96)
+          play_click_sound args
           args.state.puzzle_masks[i] = (args.state.puzzle_masks[i] == 0 ? 1 : 0)
         end
       end
@@ -625,6 +640,7 @@ def puzzle args
       v = args.state.fillgrid[args.state.fillgrid_col][args.state.fillgrid_row - 1]
       if v
         if v != 2 && args.state.fillgrid_row - 1 >= 0
+          play_select_sound args
           args.state.fillgrid[args.state.fillgrid_col][args.state.fillgrid_row - 1] = v == 0 ? 1 : 0
           args.state.fillgrid_row -= 1
         end
@@ -635,6 +651,7 @@ def puzzle args
       v = args.state.fillgrid[args.state.fillgrid_col][args.state.fillgrid_row + 1]
       if v
         if v != 2 && !(args.state.fillgrid_row + 1 > args.state.fillgrid[args.state.fillgrid_col].length - 1)
+          play_select_sound args
           args.state.fillgrid[args.state.fillgrid_col][args.state.fillgrid_row + 1] = v == 0 ? 1 : 0
           args.state.fillgrid_row += 1
         end
@@ -646,6 +663,7 @@ def puzzle args
         v = args.state.fillgrid[args.state.fillgrid_col + 1][args.state.fillgrid_row]
         if v
           if v != 2 && !(args.state.fillgrid_col + 1 > 3)
+            play_select_sound args
             args.state.fillgrid[args.state.fillgrid_col + 1][args.state.fillgrid_row] = v == 0 ? 1 : 0
             args.state.fillgrid_col += 1
           end
@@ -657,6 +675,7 @@ def puzzle args
       v = args.state.fillgrid[args.state.fillgrid_col - 1][args.state.fillgrid_row]
       if v
         if v != 2 && !(args.state.fillgrid_col - 1 < 0)
+          play_select_sound args
           args.state.fillgrid[args.state.fillgrid_col - 1][args.state.fillgrid_row] = v == 0 ? 1 : 0
           args.state.fillgrid_col -= 1
         end
@@ -732,6 +751,8 @@ def puzzle args
         }.label
         
         if args.inputs.mouse.click
+          play_click_sound args
+          
           if i == 0
             args.state.txt.chop!
           elsif (i == charlist.length - 1)
@@ -830,6 +851,8 @@ def puzzle args
             end
             
             if args.inputs.mouse.click
+              play_click_sound args
+              
               if args.state.sudogrid[i][j] + 1 > 4
                 args.state.sudogrid[i][j] = 0
               else
@@ -947,6 +970,8 @@ def puzzle args
         }.label
         
         if args.inputs.mouse.click
+          play_click_sound args
+          
           if i == 0
             args.state.txt.chop!
           elsif (i == charlist.length - 1)
@@ -1039,6 +1064,8 @@ def puzzle args
             end
             
             if args.inputs.mouse.click
+              play_click_sound args
+              
               if args.state.pyramid[i][j] + 1 < 10
                 args.state.pyramid[i][j] += 1
               else
@@ -1071,6 +1098,14 @@ def puzzle args
       [ 1, 3, 3, 3    ]
     ]
     
+    imgarr = [
+      "sprites/Arrow_Up_Key_Light.png",
+      "sprites/Arrow_Down_Key_Light.png",
+      "sprites/Arrow_Left_Key_Light.png",
+      "sprites/Arrow_Right_Key_Light.png",
+      "sprites/Command_Key_Light.png"
+    ]
+    
     args.state.keys.length.times.map do |i|
       args.state.keys[i].length.times.map do |j|
         args.outputs.primitives << {
@@ -1089,43 +1124,11 @@ def puzzle args
             h: 128,
             b: 200
           }.border
-        elsif args.state.keys[i][j] == 5
+        elsif args.state.keys[i][j] >= 1 
           args.outputs.primitives << {
             x: 400 + (j * 128),
             y: (270 + (i * 128)).from_top,
-            path: "sprites/Command_Key_Light.png",
-            w: 128,
-            h: 128
-          }.sprite
-        elsif args.state.keys[i][j] == 1
-          args.outputs.primitives << {
-            x: 400 + (j * 128),
-            y: (270 + (i * 128)).from_top,
-            path: "sprites/Arrow_Up_Key_Light.png",
-            w: 128,
-            h: 128
-          }.sprite
-        elsif args.state.keys[i][j] == 2
-          args.outputs.primitives << {
-            x: 400 + (j * 128),
-            y: (270 + (i * 128)).from_top,
-            path: "sprites/Arrow_Down_Key_Light.png",
-            w: 128,
-            h: 128
-          }.sprite
-        elsif args.state.keys[i][j] == 3
-          args.outputs.primitives << {
-            x: 400 + (j * 128),
-            y: (270 + (i * 128)).from_top,
-            path: "sprites/Arrow_Left_Key_Light.png",
-            w: 128,
-            h: 128
-          }.sprite
-        elsif args.state.keys[i][j] == 4
-          args.outputs.primitives << {
-            x: 400 + (j * 128),
-            y: (270 + (i * 128)).from_top,
-            path: "sprites/Arrow_Right_Key_Light.png",
+            path: imgarr[args.state.keys[i][j] - 1],
             w: 128,
             h: 128
           }.sprite
@@ -1190,42 +1193,6 @@ end
 def credits args
   args.outputs.background_color = [ 0, 0, 0, 255 ]
   
-  args.outputs.primitives << args.state.board.border
-  args.outputs.primitives << {
-    x: args.state.player_x + args.state.board.x,
-    y: args.state.player_y + args.state.board.y,
-    w: 48,
-    h: 48,
-    r: 200,
-    g: 0,
-    b: 183,
-  }.border
-  
-  if args.inputs.keyboard.up
-    if AABB(args.state.board.x, args.state.board.y, args.state.board.w - 48, args.state.board.h - 48, (args.state.board.x + args.state.player_x), (args.state.board.y + (args.state.player_y + 4)), 48, 48)
-      args.state.player_y += 4
-    end
-  end
-  if args.inputs.keyboard.down
-    if AABB(args.state.board.x, args.state.board.y + 48, args.state.board.w - 48, args.state.board.h - 48, (args.state.board.x + args.state.player_x), (args.state.board.y + (args.state.player_y - 4)), 48, 48)
-      args.state.player_y -= 4
-    end
-  end
-  if args.inputs.keyboard.left
-    if AABB(args.state.board.x + 48, args.state.board.y, args.state.board.w, args.state.board.h - 48, (args.state.board.x + (args.state.player_x - 4)), (args.state.board.y + args.state.player_y), 48, 48)
-      args.state.player_x -= 4
-    end
-  end
-  if args.inputs.keyboard.right
-    if AABB(args.state.board.x - 48, args.state.board.y, args.state.board.w, args.state.board.h - 48, (args.state.board.x + (args.state.player_x + 4)), (args.state.board.y + args.state.player_y), 48, 48)
-      args.state.player_x += 4
-    end
-  end
-  
-  if args.inputs.keyboard.key_down.escape
-    args.state.scene = 0
-  end
-  
   args.outputs.primitives << {
     x: 522,
     y: 568,
@@ -1266,4 +1233,41 @@ def credits args
     size_enum: 2,
     r: 255
   }.label
+  
+  args.outputs.primitives << {
+    x: args.state.player_x + args.state.board.x,
+    y: args.state.player_y + args.state.board.y,
+    w: 48,
+    h: 48,
+    r: 200,
+    g: 0,
+    b: 183,
+  }.border
+  
+  args.outputs.primitives << args.state.board.border
+  
+  if args.inputs.keyboard.up
+    if AABB(args.state.board.x, args.state.board.y, args.state.board.w - 48, args.state.board.h - 48, (args.state.board.x + args.state.player_x), (args.state.board.y + (args.state.player_y + 4)), 48, 48)
+      args.state.player_y += 4
+    end
+  end
+  if args.inputs.keyboard.down
+    if AABB(args.state.board.x, args.state.board.y + 48, args.state.board.w - 48, args.state.board.h - 48, (args.state.board.x + args.state.player_x), (args.state.board.y + (args.state.player_y - 4)), 48, 48)
+      args.state.player_y -= 4
+    end
+  end
+  if args.inputs.keyboard.left
+    if AABB(args.state.board.x + 48, args.state.board.y, args.state.board.w, args.state.board.h - 48, (args.state.board.x + (args.state.player_x - 4)), (args.state.board.y + args.state.player_y), 48, 48)
+      args.state.player_x -= 4
+    end
+  end
+  if args.inputs.keyboard.right
+    if AABB(args.state.board.x - 48, args.state.board.y, args.state.board.w, args.state.board.h - 48, (args.state.board.x + (args.state.player_x + 4)), (args.state.board.y + args.state.player_y), 48, 48)
+      args.state.player_x += 4
+    end
+  end
+  
+  if args.inputs.keyboard.key_down.escape
+    args.state.scene = 0
+  end
 end
