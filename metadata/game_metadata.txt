@@ -1,0 +1,6 @@
+devid=Rabios
+devtitle=Rabia Alhaffar
+gameid=6wrniStudentsJamOne
+gametitle=6wrniStudentsJamOne
+version=0.1
+icon=metadata/icon.png
