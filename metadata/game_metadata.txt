@@ -1,6 +1,6 @@
 devid=Rabios
 devtitle=Rabia Alhaffar
-gameid=6wrniStudentsJamOne
-gametitle=6wrniStudentsJamOne
+gameid=08_rooms
+gametitle=08-ROOMS
 version=0.1
 icon=metadata/icon.png
