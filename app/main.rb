@@ -1069,7 +1069,7 @@ def puzzle args
               if args.state.pyramid[i][j] + 1 < 10
                 args.state.pyramid[i][j] += 1
               else
-                args.state.pyramid[i][j] = 1
+                args.state.pyramid[i][j] = 0
               end
             end
           end
