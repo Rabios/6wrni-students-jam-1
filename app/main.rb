@@ -201,7 +201,6 @@ def setup args
   args.state.mouse_row          ||= 0
   args.state.rooms              ||= []
   args.state.puzzles_done       ||= [ 0, 0, 0, 0, 0, 0, 0, 0 ]
-  #args.state.puzzles_done       ||= [ 1, 1, 1, 1, 1, 1, 1, 1 ]
   args.state.bitmasks           ||= [ 1, 2, 4, 8, 16, 32, 64, 128 ]
   args.state.puzzle_masks       ||= [ 0, 0, 0, 0, 0, 0, 0, 0 ]
   args.state.txt                ||= ""
@@ -548,12 +547,15 @@ def puzzle args
     }.label
     
     args.state.puzzle_masks.length.times.map do |i|
+      aabb_puzzle_mask = AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, 196 + (i * 96), 396.from_top, 96, 96)
+      
       args.outputs.primitives << {
         x: 196 + (i * 96),
         y: 396.from_top,
         w: 96,
         h: 96,
-        r: 255
+        r: 255,
+        b: aabb_puzzle_mask ? 255 : 0
       }.border
       
       args.outputs.primitives << {
@@ -561,7 +563,8 @@ def puzzle args
         y: 248.from_top,
         text: args.state.bitmasks[i],
         size_enum: 8,
-        r: 255
+        r: 255,
+        b: aabb_puzzle_mask ? 255 : 0
       }.label
       
       args.outputs.primitives << {
@@ -569,7 +572,8 @@ def puzzle args
         y: 308.from_top,
         text: args.state.puzzle_masks[i],
         size_enum: 32,
-        r: 255
+        r: 255,
+        b: aabb_puzzle_mask ? 255 : 0
       }.label
       
       if args.inputs.mouse.click
@@ -697,12 +701,15 @@ def puzzle args
   elsif args.state.current_puzzle == 3
     charlist = [ "<", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ">>" ]
     charlist.length.times.map do |i|
+      aabb_input_rec = AABB(225 + (i * 72), 28, 64, 64, args.inputs.mouse.x, args.inputs.mouse.y, 1, 1)
+      
       args.outputs.primitives << {
         x: 225 + (i * 72),
         y: 28,
         w: 64,
         h: 64,
-        r: 255
+        r: 255,
+        b: aabb_input_rec ? 255 : 0
       }.border
       
       args.outputs.primitives << {
@@ -710,7 +717,8 @@ def puzzle args
         y: 76,
         text: charlist[i],
         size_enum: 8,
-        r: 255
+        r: 255,
+        b: aabb_input_rec ? 255 : 0
       }.label
       
       args.outputs.primitives << {
@@ -729,27 +737,7 @@ def puzzle args
         r: 255
       }.label
       
-      if AABB(225 + (i * 72), 28, 64, 64, args.inputs.mouse.x, args.inputs.mouse.y, 1, 1)
-        args.outputs.primitives << {
-          x: 225 + (i * 72),
-          y: 28,
-          w: 64,
-          h: 64,
-          r: 255,
-          g: 0,
-          b: 255
-        }.border
-        
-        args.outputs.primitives << {
-          x: 250 + (i * 72),
-          y: 76,
-          text: charlist[i],
-          size_enum: 8,
-          r: 255,
-          g: 0,
-          b: 255
-        }.label
-        
+      if aabb_input_rec
         if args.inputs.mouse.click
           play_click_sound args
           
@@ -811,12 +799,15 @@ def puzzle args
     args.state.sudogrid.length.times.map do |i|
       args.state.sudogrid[i].length.times.map do |j|
         if args.state.sudogrid[i][j] != 10
+          aabb_sudoku_rec = AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, (498 + (j * 64)), (298 + (i * 64)).from_top, 64, 64)
+          
           args.outputs.primitives << {
             x: (498 + (j * 64)),
             y: (298 + (i * 64)).from_top,
             w: 64,
             h: 64,
-            r: 255
+            r: 255,
+            b: aabb_sudoku_rec ? 255 : 0
           }.border
           
           if args.state.sudogrid[i][j] != 0
@@ -825,31 +816,12 @@ def puzzle args
               y: (236 + (i * 64)).from_top,
               text: args.state.sudogrid[i][j],
               size_enum: 16,
-              r: 255
+              r: 255,
+              b: aabb_sudoku_rec ? 255 : 0
             }.label
           end
           
-          if AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, (498 + (j * 64)), (298 + (i * 64)).from_top, 64, 64)
-            args.outputs.primitives << {
-              x: (498 + (j * 64)),
-              y: (298 + (i * 64)).from_top,
-              w: 64,
-              h: 64,
-              r: 255,
-              b: 200
-            }.border
-            
-            if args.state.sudogrid[i][j] != 0
-              args.outputs.primitives << {
-                x: (508 + (j * 64)),
-                y: (236 + (i * 64)).from_top,
-                text: args.state.sudogrid[i][j],
-                size_enum: 16,
-                r: 200,
-                b: 100
-              }.label
-            end
-            
+          if aabb_sudoku_rec
             if args.inputs.mouse.click
               play_click_sound args
               
@@ -916,12 +888,15 @@ def puzzle args
   
     charlist = [ "<", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", ">>" ]
     charlist.length.times.map do |i|
+      aabb_input_rec = AABB(225 + (i * 72), 28, 64, 64, args.inputs.mouse.x, args.inputs.mouse.y, 1, 1)
+      
       args.outputs.primitives << {
         x: 225 + (i * 72),
         y: 28,
         w: 64,
         h: 64,
-        r: 255
+        r: 255,
+        b: aabb_input_rec ? 255 : 0
       }.border
       
       args.outputs.primitives << {
@@ -929,7 +904,8 @@ def puzzle args
         y: 76,
         text: charlist[i],
         size_enum: 8,
-        r: 255
+        r: 255,
+        b: aabb_input_rec ? 255 : 0
       }.label
       
       args.outputs.primitives << {
@@ -948,27 +924,7 @@ def puzzle args
         r: 255
       }.label
       
-      if AABB(225 + (i * 72), 28, 64, 64, args.inputs.mouse.x, args.inputs.mouse.y, 1, 1)
-        args.outputs.primitives << {
-          x: 225 + (i * 72),
-          y: 28,
-          w: 64,
-          h: 64,
-          r: 255,
-          g: 0,
-          b: 255
-        }.border
-        
-        args.outputs.primitives << {
-          x: 250 + (i * 72),
-          y: 76,
-          text: charlist[i],
-          size_enum: 8,
-          r: 255,
-          g: 0,
-          b: 255
-        }.label
-        
+      if aabb_input_rec
         if args.inputs.mouse.click
           play_click_sound args
           
@@ -989,7 +945,6 @@ def puzzle args
         end
       end
     end
-    
     
     magic.length.times.map do |i|
       magic[i].length.times.map do |j|
@@ -1012,23 +967,17 @@ def puzzle args
     end
     
   elsif args.state.current_puzzle == 6
-    vpyramid = [
-      [ 113 ],
-      [ 64, 49 ],
-      [ 37, 27, 22 ],
-      [ 21, 16, 11, 11 ],
-      [ 11, 10, 6, 5, 6 ],
-      [ 3, 8, 2, 4, 1, 5 ]
-    ]
-    
     args.state.pyramid.length.times.map do |i|
       args.state.pyramid[i].length.times.map do |j|
+        aabb_pyramid_rec = args.state.pyramid[i][j] < 10 && AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, (616 + (j * 64)) - (32 * args.state.pyramid[i].length), (216 + (i * 64)).from_top, 64, 64)
+        
         args.outputs.primitives << {
           x: (632 + (j * 64)) - (32 * args.state.pyramid[i].length),
           y: (240 + (i * 64)).from_top,
           w: 64,
           h: 64,
-          r: 255
+          r: 255,
+          b: aabb_pyramid_rec ? 255 : 0
         }.border
         
         if args.state.pyramid[i][j] != 0
@@ -1037,32 +986,13 @@ def puzzle args
             y: (188 + (i * 64)).from_top,
             text: args.state.pyramid[i][j],
             size_enum: 8,
-            r: 255
+            r: 255,
+            b: aabb_pyramid_rec ? 255 : 0
           }.label
         end
         
         if AABB(args.inputs.mouse.x, args.inputs.mouse.y, 1, 1, (616 + (j * 64)) - (32 * args.state.pyramid[i].length), (216 + (i * 64)).from_top, 64, 64)
           if args.state.pyramid[i][j] < 10
-            args.outputs.primitives << {
-              x: (632 + (j * 64)) - (32 * args.state.pyramid[i].length),
-              y: (240 + (i * 64)).from_top,
-              w: 64,
-              h: 64,
-              r: 255,
-              b: 200
-            }.border
-            
-            if args.state.pyramid[i][j] != 0
-              args.outputs.primitives << {
-                x: (((i == 0 && j == 0) ? 637 : 655) + (j * 64)) - (32 * args.state.pyramid[i].length),
-                y: (188 + (i * 64)).from_top,
-                text: args.state.pyramid[i][j],
-                size_enum: 8,
-                r: 255,
-                b: 200
-              }.label
-            end
-            
             if args.inputs.mouse.click
               play_click_sound args
               
@@ -1077,14 +1007,22 @@ def puzzle args
       end
     end
     
-    res = 0
-    args.state.pyramid.length.times.map do |i|
-      if arr_match(args.state.pyramid[i], vpyramid[i])
-        res += 1
+    res1 = 0
+    res2 = 0
+    
+    5.times.map do |i|
+      if (args.state.pyramid[5][i] + args.state.pyramid[5][i + 1] == args.state.pyramid[4][i])
+        res1 += 1
       end
     end
     
-    if res == 6
+    4.times.map do |i|
+      if (args.state.pyramid[4][i] + args.state.pyramid[4][i + 1] == args.state.pyramid[3][i])
+        res2 += 1
+      end
+    end
+    
+    if res1 == 5 && res2 == 4
       play_success_sound args
       args.state.scene = 1
       args.state.puzzles_done[6] = 1
