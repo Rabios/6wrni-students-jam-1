@@ -53,8 +53,3 @@ v0.2 (June 12, 2021) => 1. Improved "Pyramid of Numbers" Puzzle.
                         2. Rendering improvements!
 
 v0.1 (June 8, 2021)  => First release of the game!
-
-=================================
-Version v0.1 (1/June/2021)
-=================================
-First release of the game!
